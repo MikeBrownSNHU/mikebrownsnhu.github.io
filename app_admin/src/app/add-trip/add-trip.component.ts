@@ -1,53 +1,49 @@
-import { Component, OnInit } from '@angular/core';
+/**
+ * @file add-trip.component.ts
+ * @description Handles creating a new trip via the API.
+ *
+ * Enhancement Notes (CS-499 Category 1 - Software Engineering & Design):
+ * - Refactored to use the shared TripFormComponent instead of duplicating
+ *   the entire form template. This component now only handles the submit
+ *   logic (calling the service), while the form UI lives in trip-form.
+ *
+ * @author Mike Brown
+ */
+
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
-import { Router } from "@angular/router";
+import { Router } from '@angular/router';
 import { TripDataService } from '../services/trip-data.service';
+import { TripFormComponent } from '../trip-form/trip-form.component';
 
 @Component({
-selector: 'app-add-trip',
-standalone: true,
-imports: [CommonModule, ReactiveFormsModule],
-templateUrl: './add-trip.component.html',
-styleUrl: './add-trip.component.css'
+  selector: 'app-add-trip',
+  standalone: true,
+  imports: [CommonModule, TripFormComponent],
+  templateUrl: './add-trip.component.html',
+  styleUrl: './add-trip.component.css'
 })
-export class AddTripComponent implements OnInit {
-public addForm!: FormGroup;
-submitted = false;
+export class AddTripComponent {
 
-constructor(
-private formBuilder: FormBuilder,
-private router: Router,
-private tripService: TripDataService
-) { }
+  constructor(
+    private router: Router,
+    private tripService: TripDataService
+  ) {}
 
-ngOnInit() {
-this.addForm = this.formBuilder.group({
-_id: [],
-code: ["", Validators.required],
-name: ["", Validators.required],
-length: ["", Validators.required],
-start: ["", Validators.required],
-resort: ["", Validators.required],
-perPerson: ["", Validators.required],
-image: ["", Validators.required],
-description: ["", Validators.required],
-})
+  /**
+   * Handles form submission from the shared trip-form component.
+   * Calls the API to create the trip, then navigates back to the list.
+   * @param formData - Trip object emitted from TripFormComponent
+   */
+  onFormSubmit(formData: any): void {
+    this.tripService.addTrip(formData).subscribe({
+      next: (data: any) => {
+        console.log('Trip added:', data);
+        this.router.navigate(['']);
+      },
+      error: (error: any) => {
+        console.log('Error adding trip:', error);
+      }
+    });
+  }
 }
-public onSubmit() {
-this.submitted = true;
-if(this.addForm.valid){
-this.tripService.addTrip(this.addForm.value)
-.subscribe( {
-next: (data: any) => {
-  console.log(data);
-  this.router.navigate(['']);
-  },
-  error: (error: any) => {
-  console.log('Error: ' + error);
-  }});
-  }
-  }
-  // get the form short name to access the form fields
-  get f() { return this.addForm.controls; }
-  }

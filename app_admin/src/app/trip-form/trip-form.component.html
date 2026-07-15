@@ -1,0 +1,86 @@
+<!-- 
+  Shared trip form template used by both add-trip and edit-trip components.
+  Eliminates the duplicated markup that existed in the original code.
+  The parent component passes mode ('add'/'edit') and optional trip data.
+-->
+<div class="col-md-4">
+  <h2 class="text-center">{{ mode === 'edit' ? 'Edit Trip' : 'Add Trip' }}</h2>
+  <form *ngIf="tripForm" [formGroup]="tripForm" (ngSubmit)="onSubmit()">
+    <div class="form-group">
+      <label for="code">Code:</label>
+      <input type="text" id="code" formControlName="code" placeholder="Trip Code"
+        class="form-control" [ngClass]="{ 'is-invalid': submitted && f['code'].errors }">
+      <div *ngIf="submitted && f['code'].errors" class="invalid-feedback">
+        <span *ngIf="f['code'].errors?.['required']">Trip code is required</span>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="name">Name:</label>
+      <input type="text" id="name" formControlName="name" placeholder="Trip Name"
+        class="form-control" [ngClass]="{ 'is-invalid': submitted && f['name'].errors }">
+      <div *ngIf="submitted && f['name'].errors" class="invalid-feedback">
+        <span *ngIf="f['name'].errors?.['required']">Name is required</span>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="length">Length (nights):</label>
+      <input type="number" id="length" formControlName="length" placeholder="Number of nights"
+        class="form-control" [ngClass]="{ 'is-invalid': submitted && f['length'].errors }">
+      <div *ngIf="submitted && f['length'].errors" class="invalid-feedback">
+        <span *ngIf="f['length'].errors?.['required']">Length is required</span>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="start">Start Date:</label>
+      <input type="date" id="start" formControlName="start" placeholder="Start Date"
+        class="form-control" [ngClass]="{ 'is-invalid': submitted && f['start'].errors }">
+      <div *ngIf="submitted && f['start'].errors" class="invalid-feedback">
+        <span *ngIf="f['start'].errors?.['required']">Start date is required</span>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="resort">Resort:</label>
+      <input type="text" id="resort" formControlName="resort" placeholder="Resort Name"
+        class="form-control" [ngClass]="{ 'is-invalid': submitted && f['resort'].errors }">
+      <div *ngIf="submitted && f['resort'].errors" class="invalid-feedback">
+        <span *ngIf="f['resort'].errors?.['required']">Resort is required</span>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="perPerson">Per Person ($):</label>
+      <input type="number" id="perPerson" formControlName="perPerson" placeholder="Price per person"
+        class="form-control" [ngClass]="{ 'is-invalid': submitted && f['perPerson'].errors }">
+      <div *ngIf="submitted && f['perPerson'].errors" class="invalid-feedback">
+        <span *ngIf="f['perPerson'].errors?.['required']">Per person cost is required</span>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="image">Image Name:</label>
+      <input type="text" id="image" formControlName="image" placeholder="Image filename"
+        class="form-control" [ngClass]="{ 'is-invalid': submitted && f['image'].errors }">
+      <div *ngIf="submitted && f['image'].errors" class="invalid-feedback">
+        <span *ngIf="f['image'].errors?.['required']">Image name is required</span>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="description">Description:</label>
+      <textarea id="description" formControlName="description" placeholder="Trip description"
+        class="form-control" rows="3"
+        [ngClass]="{ 'is-invalid': submitted && f['description'].errors }"></textarea>
+      <div *ngIf="submitted && f['description'].errors" class="invalid-feedback">
+        <span *ngIf="f['description'].errors?.['required']">Description is required</span>
+      </div>
+    </div>
+
+    <button type="submit" class="btn btn-info">
+      {{ mode === 'edit' ? 'Update Trip' : 'Add Trip' }}
+    </button>
+  </form>
+</div>

@@ -1,95 +1,77 @@
+/**
+ * @file edit-trip.component.ts
+ * @description Handles loading and updating an existing trip.
+ *
+ * Enhancement Notes (CS-499 Category 1 - Software Engineering & Design):
+ * - Refactored to use the shared TripFormComponent (eliminates duplicate template)
+ * - Still uses localStorage for trip code passing (will be moved to route params
+ *   in Category 2 enhancement), but at least the form duplication is gone
+ * - Added error feedback instead of just console.log
+ *
+ * @author Mike Brown
+ */
+
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from "@angular/forms";
 import { TripDataService } from '../services/trip-data.service';
+import { TripFormComponent } from '../trip-form/trip-form.component';
 import { Trip } from '../models/trip';
-
-// Import DatePipe
-import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-edit-trip',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
-  providers: [DatePipe],
+  imports: [CommonModule, TripFormComponent],
   templateUrl: './edit-trip.component.html',
   styleUrl: './edit-trip.component.css'
 })
-
 export class EditTripComponent implements OnInit {
-  public editForm!: FormGroup;
-  trip!: Trip;
-  submitted = false;
-  message : string = '';
+  tripData: any = null;
+  message: string = '';
 
   constructor(
-    private formBuilder: FormBuilder,
     private router: Router,
     private tripDataService: TripDataService
-    ) {}
+  ) {}
 
-    ngOnInit() : void{
-      // Retrieve stashed trip ID
-      let tripCode = localStorage.getItem("tripCode");
-      if (!tripCode) {
-      alert("Something wrong, couldn’t find where I stashed tripCode!");
+  ngOnInit(): void {
+    // Get trip code from localStorage (set by trip-card when user clicks edit)
+    const tripCode = localStorage.getItem('tripCode');
+
+    if (!tripCode) {
+      this.message = 'Error: No trip code found. Redirecting...';
       this.router.navigate(['']);
       return;
+    }
+
+    // Fetch the trip data to pre-fill the form
+    this.tripDataService.getTrip(tripCode).subscribe({
+      next: (value: any) => {
+        // API might return array or single object depending on endpoint
+        this.tripData = Array.isArray(value) ? value[0] : value;
+        this.message = `Editing trip: ${tripCode}`;
+      },
+      error: (error: any) => {
+        console.log('Error fetching trip:', error);
+        this.message = 'Error loading trip data';
       }
-      console.log('EditTripComponent::ngOnInit');
-console.log('tripcode:' + tripCode);
-this.editForm = this.formBuilder.group({
-_id: [],
-code: [tripCode, Validators.required],
-name: ["", Validators.required],
-length: ["", Validators.required],
-start: ["", Validators.required],
-resort: ["", Validators.required],
-perPerson: ["", Validators.required],
-image: ["", Validators.required],
-description: ['', Validators.required]
-})
+    });
+  }
 
-this.tripDataService.getTrip(tripCode)
-.subscribe({
-next: (value: any) => {
-this.trip = value;
-// Populate our record into the form
-this.editForm.patchValue(value[0]);
-if(!value)
-{
-this.message = 'No Trip Retrieved!';
-}
-else{
-this.message = 'Trip: ' + tripCode + ' retrieved';
-}
-console.log(this.message);
-},
-error: (error: any) => {
-console.log('Error: ' + error);
-}
-})
-
-}
-
-public onSubmit() {
-this.submitted = true;
-if(this.editForm.valid)
-{
-this.tripDataService.updateTrip(this.editForm.value)
-.subscribe({
-next: (value: any) => {
-console.log(value);
-this.router.navigate(['']);
-},
-error: (error: any) => {
-console.log('Error: ' + error);
-}
-})}
-}
-
-// get the form short name to access the form fields
-get f() { return this.editForm.controls; }
-
+  /**
+   * Handles form submission from the shared trip-form component.
+   * Calls the API to update the trip, then navigates back to the list.
+   * @param formData - Updated trip object emitted from TripFormComponent
+   */
+  onFormSubmit(formData: any): void {
+    this.tripDataService.updateTrip(formData).subscribe({
+      next: (value: any) => {
+        console.log('Trip updated:', value);
+        this.router.navigate(['']);
+      },
+      error: (error: any) => {
+        console.log('Error updating trip:', error);
+      }
+    });
+  }
 }
