@@ -16,15 +16,15 @@ This site showcases projects completed throughout my degree program and document
 
 ### Enhancing the CS 465 Full Stack Travel Application
 
-For my capstone project, I selected my Full Stack Travel Application that was originally developed during CS 465.
+For my capstone project, I selected my Full Stack Travel Application that was originally developed during CS 465. The application uses the MEAN stack (MongoDB, Express, Angular, Node.js) and includes a customer-facing travel site and an administrative SPA for managing trip data.
 
-Throughout the capstone, I will enhance the application in three major areas:
+Throughout the capstone, I enhanced the application in three major areas:
 
 - Software Engineering and Design
 - Algorithms and Data Structures
 - Database Design and Optimization
 
-These enhancements will transform the original course project into a more complete and production-ready application while demonstrating the skills developed throughout my Computer Science degree.
+These enhancements transform the original course project into a more complete and production-ready application while demonstrating the skills developed throughout my Computer Science degree.
 
 ---
 
@@ -32,9 +32,27 @@ These enhancements will transform the original course project into a more comple
 
 | Enhancement | Status |
 |-------------|:------:|
-| Software Engineering & Design | 🚧 In Progress |
+| Software Engineering & Design | ✅ Complete |
 | Algorithms & Data Structures | 🚧 In Progress |
 | Database Design | 🚧 In Progress |
+
+---
+
+# Enhancement One: Software Engineering & Design
+
+For this enhancement, I focused on restructuring the application to improve maintainability, security, and code quality. Key improvements included:
+
+- Fixed a critical JWT authentication bug where the middleware never actually blocked unauthorized requests
+- Added role-based access control so only admin users can create or modify trips
+- Increased password hashing strength from 1,000 to 210,000 PBKDF2 iterations (per OWASP guidelines)
+- Added proper error handling (try/catch) to all API controllers that previously had none
+- Created a shared Angular form component to eliminate duplicate templates between add-trip and edit-trip
+- Fixed a race condition in the login component that relied on a setTimeout timer instead of proper async handling
+- Added input validation on all API endpoints before database writes
+- Integrated helmet for HTTP security headers
+- Added JSDoc documentation throughout the codebase
+
+These changes address Course Outcomes 2 (professional communication), 4 (software engineering techniques), and 5 (security-focused development).
 
 ---
 
