@@ -75,6 +75,30 @@ These changes address Course Outcome 3 (algorithmic principles and design trade-
 
 ---
 
+# Code Review
+
+As part of the capstone process, I conducted a thorough code review of the original artifact before beginning enhancements. The review identified security vulnerabilities, algorithmic inefficiencies, and database design flaws that guided my enhancement plan across all three categories.
+
+### Category One: Software Design and Engineering
+
+[![Code Review - Software Design and Engineering](https://img.youtube.com/vi/Of6VZ2yBVEA/0.jpg)](https://youtu.be/Of6VZ2yBVEA)
+
+[Watch on YouTube](https://youtu.be/Of6VZ2yBVEA)
+
+### Category Two: Algorithms and Data Structures
+
+[![Code Review - Algorithms and Data Structures](https://img.youtube.com/vi/MgQl8DuVn2A/0.jpg)](https://youtu.be/MgQl8DuVn2A)
+
+[Watch on YouTube](https://youtu.be/MgQl8DuVn2A)
+
+### Category Three: Databases
+
+[![Code Review - Databases](https://img.youtube.com/vi/3mITZRAcLKw/0.jpg)](https://youtu.be/3mITZRAcLKw)
+
+[Watch on YouTube](https://youtu.be/3mITZRAcLKw)
+
+---
+
 # Featured Project
 
 ## CS 465 – Full Stack Travel Application
