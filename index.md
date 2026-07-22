@@ -33,7 +33,7 @@ These enhancements transform the original course project into a more complete an
 | Enhancement | Status |
 |-------------|:------:|
 | Software Engineering & Design | ✅ Complete |
-| Algorithms & Data Structures | 🚧 In Progress |
+| Algorithms & Data Structures | ✅ Complete |
 | Database Design | 🚧 In Progress |
 
 ---
@@ -53,6 +53,25 @@ For this enhancement, I focused on restructuring the application to improve main
 - Added JSDoc documentation throughout the codebase
 
 These changes address Course Outcomes 2 (professional communication), 4 (software engineering techniques), and 5 (security-focused development).
+
+---
+
+# Enhancement Two: Algorithms & Data Structures
+
+For this enhancement, I focused on replacing the naive data access pattern with efficient, scalable query operations that leverage proper data structures. The original API loaded every document on every request with no way to search, filter, sort, or paginate.
+
+Key improvements included:
+
+- Added full-text search using a compound text index (inverted index data structure) on trip name and description with weighted relevance scoring
+- Implemented B-tree indexed filtering for resort name, price range, and trip length — enabling O(log n) lookups instead of O(n) collection scans
+- Added server-side sorting with field and direction parameters, validated against an allowlist to prevent injection
+- Implemented cursor-based pagination with a response envelope containing metadata (total count, current page, total pages, page size)
+- Built an aggregation pipeline using $facet to produce trip statistics in a single collection scan: overall averages, per-resort breakdown, price distribution histogram, and upcoming trips
+- Created a performance benchmarking endpoint that times original vs. enhanced approaches with Big-O complexity analysis
+- Used a query builder pattern with pure helper functions for filter construction, sort parsing, and pagination validation
+- Added security measures: regex character escaping (ReDoS prevention), bounded page sizes (memory exhaustion prevention), and allowlisted sort fields (injection prevention)
+
+These changes address Course Outcome 3 (algorithmic principles and design trade-offs), with continued coverage of Outcomes 4 (innovative techniques and tools) and 5 (security mindset).
 
 ---
 
