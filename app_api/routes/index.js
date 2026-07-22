@@ -76,13 +76,26 @@ function authorizeRole(role) {
 }
 
 // --- Trip Routes ---
-// Public: anyone can view trips
+// Public: anyone can view trips, stats, and performance data
 // Protected: must be authenticated AND have admin role to create/update
+
+// Statistics and performance endpoints (must be defined BEFORE :tripCode
+// to avoid Express matching "stats" or "performance" as a tripCode param)
+router
+  .route('/trips/stats')
+  .get(tripsController.tripsStats);
+
+router
+  .route('/trips/performance')
+  .get(tripsController.tripsPerformance);
+
+// Trip listing with search/filter/sort/pagination, and trip creation
 router
   .route('/trips')
   .get(tripsController.tripsList)
   .post(authenticateJWT, authorizeRole('admin'), tripsController.tripsAddTrip);
 
+// Single trip lookup and update by code
 router
   .route('/trips/:tripCode')
   .get(tripsController.tripsFindByCode)

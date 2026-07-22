@@ -1,11 +1,26 @@
 import { Inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from "rxjs";
+import { map } from "rxjs/operators";
 
 import { Trip } from '../models/trip';
 import { User } from '../models/user';
 import { AuthResponse } from '../models/auth-response';
 import { BROWSER_STORAGE } from '../storage';
+
+/**
+ * Response envelope from the enhanced GET /api/trips endpoint.
+ * Contains paginated data array and metadata.
+ */
+interface TripListResponse {
+  data: Trip[];
+  meta: {
+    total: number;
+    page: number;
+    pages: number;
+    limit: number;
+  };
+}
 
 @Injectable({
   providedIn: 'root'
@@ -21,8 +36,15 @@ export class TripDataService {
   url = 'http://localhost:3000/api/trips';
   baseUrl = 'http://localhost:3000/api';
   
+  /**
+   * Gets all trips from the API.
+   * Maps the paginated envelope response to extract just the data array
+   * for backward compatibility with existing components.
+   */
   getTrips() : Observable<Trip[]> {
-    return this.http.get<Trip[]>(this.url);
+    return this.http.get<TripListResponse>(this.url).pipe(
+      map(response => response.data)
+    );
   }
 
   addTrip(formData: Trip) : Observable<Trip> {

@@ -10,6 +10,13 @@
  * - Added trim to string fields to avoid whitespace issues
  * - Added min validators on numeric fields
  * 
+ * Enhancement Notes (CS-499 Category 2 - Algorithms & Data Structures):
+ * - Added compound text index on name + description for full-text search
+ * - Added index on resort field for filtered queries
+ * - Added index on perPerson field for price range queries
+ * - These indexes support efficient search, filter, and sort operations
+ *   without full collection scans
+ * 
  * @author Mike Brown
  */
 
@@ -27,7 +34,6 @@ const tripSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
-    index: true,
     trim: true
   },
   length: {
@@ -42,11 +48,13 @@ const tripSchema = new mongoose.Schema({
   resort: {
     type: String,
     required: true,
+    index: true, // Index for resort filter queries
     trim: true
   },
   perPerson: {
     type: Number, // Was String - should be numeric (dollar amount)
     required: true,
+    index: true, // Index for price range queries
     min: [0, 'Price per person cannot be negative']
   },
   image: {
@@ -60,6 +68,20 @@ const tripSchema = new mongoose.Schema({
     trim: true
   }
 });
+
+/**
+ * Compound text index on name and description fields.
+ * Enables MongoDB $text search operator for keyword queries.
+ * Weights prioritize name matches (3x) over description matches (1x).
+ * 
+ * This is a key data structure enhancement: text indexes use an inverted
+ * index structure (similar to search engines) where each word maps to the
+ * documents containing it, enabling O(1) lookup per term vs O(n) regex scan.
+ */
+tripSchema.index(
+  { name: 'text', description: 'text' },
+  { weights: { name: 3, description: 1 }, name: 'trip_text_search' }
+);
 
 const Trip = mongoose.model('trips', tripSchema);
 module.exports = Trip;
